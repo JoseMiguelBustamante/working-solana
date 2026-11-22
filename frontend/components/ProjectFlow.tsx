@@ -1,8 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import type { ReactNode } from "react";
+import { getAccount, signOut, type WorkingAccount } from "../lib/account";
 
 const icons = {
   bolt: <path d="m13 2-9 12h7l-1 8 10-12h-7l1-8Z"/>,
@@ -34,7 +37,10 @@ export function FlowIcon({ name }: { name: keyof typeof icons }) {
 export function ProjectFlow({ page, children }: { page: "login" | "create" | "register"; children: ReactNode }) {
   const { publicKey } = useWallet();
   const { setVisible } = useWalletModal();
+  const router = useRouter();
   const address = publicKey?.toBase58();
+  const [account, setAccount] = useState<WorkingAccount | null>(null);
+  useEffect(() => setAccount(getAccount()), []);
 
   return (
     <div className={`project-flow flow-${page}`}>
@@ -46,11 +52,36 @@ export function ProjectFlow({ page, children }: { page: "login" | "create" | "re
           </Link>
           <span className="flow-tagline">Talento con pagos protegidos</span>
           <nav aria-label="Navegación principal">
+            {account && !address ? (
+              <span className="flow-account-chip" title={account.email}>
+                {account.role === "company" ? "🏢" : "🧑‍💻"} {account.name}
+              </span>
+            ) : null}
+            {!account && (
+              <>
+                <Link href="/acceso" className="flow-auth-link">Ingresar</Link>
+                <Link href="/registro" className="flow-auth-cta">Crear cuenta</Link>
+              </>
+            )}
             <Link href="/create" className="flow-publish">Publicar proyecto</Link>
             <button type="button" className="flow-wallet" onClick={() => setVisible(true)}>
               <FlowIcon name="wallet" />
               {address ? `${address.slice(0, 4)}…${address.slice(-4)}` : "Conectar wallet"}
             </button>
+            {account && (
+              <button
+                type="button"
+                className="flow-auth-logout"
+                aria-label="Cerrar sesión"
+                title="Cerrar sesión"
+                onClick={() => {
+                  signOut();
+                  setAccount(null);
+                }}
+              >
+                <FlowIcon name="hidden" />
+              </button>
+            )}
           </nav>
         </div>
       </header>

@@ -82,29 +82,6 @@ export default function Home() {
   return (
     <ProjectFlow page="create">
     <main className="container flow-main">
-      {account ? (
-        <div className="row" style={{ gap: 10, marginBottom: 12 }}>
-          <span className="badge" title={account.email} style={{ fontSize: 13 }}>
-            {account.role === "company" ? "🏢" : "🧑‍💻"} {account.name}
-          </span>
-          <a
-            className="muted"
-            style={{ cursor: "pointer" }}
-            onClick={() => {
-              signOut();
-              setAccount(null);
-            }}
-          >
-            salir
-          </a>
-        </div>
-      ) : (
-        <div className="row" style={{ gap: 10, marginBottom: 12 }}>
-          <span className="muted">Para publicar o postularte:</span>
-          <Link href="/acceso" className="btn secondary">Ingresar</Link>
-          <Link href="/registro" className="btn">Crear cuenta</Link>
-        </div>
-      )}
 
       <section className="hero">
         <div style={{ display: "flex", gap: 28, alignItems: "center", flexWrap: "wrap" }}>
