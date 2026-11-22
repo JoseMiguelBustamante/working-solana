@@ -1,0 +1,14 @@
+node_modules/
+.DS_Store
+*.log
+.anchor
+target
+**/*.rs.bk
+test-ledger
+.yarn
+.surfpool
+
+.next
+
+demo/developer.json
+demo/*.key*

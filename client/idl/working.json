@@ -1,0 +1,1555 @@
+{
+  "address": "4PpN144MTTWfmD17ALoVuk5FS2FtiZawvUtgvrYSa8vH",
+  "metadata": {
+    "name": "working",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "accept_application",
+      "docs": [
+        "Accepts one application and locks `budget + fee` in the contract vault."
+      ],
+      "discriminator": [
+        32,
+        123,
+        133,
+        159,
+        182,
+        237,
+        161,
+        163
+      ],
+      "accounts": [
+        {
+          "name": "company",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "project"
+          ]
+        },
+        {
+          "name": "company_profile",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  102,
+                  105,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "company"
+              }
+            ]
+          }
+        },
+        {
+          "name": "project",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  106,
+                  101,
+                  99,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "company"
+              }
+            ]
+          },
+          "relations": [
+            "application"
+          ]
+        },
+        {
+          "name": "application",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  112,
+                  112,
+                  108,
+                  105,
+                  99,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              },
+              {
+                "kind": "account",
+                "path": "application.developer",
+                "account": "Application"
+              }
+            ]
+          }
+        },
+        {
+          "name": "contract",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  97,
+                  99,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "Lamport vault pinned to this contract; funded here, spent only by the program."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "contract"
+              }
+            ]
+          }
+        },
+        {
+          "name": "treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "apply_to_project",
+      "discriminator": [
+        238,
+        235,
+        217,
+        164,
+        133,
+        8,
+        211,
+        60
+      ],
+      "accounts": [
+        {
+          "name": "developer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "developer_profile",
+          "docs": [
+            "Strict role: only wallets with a Developer profile may apply."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  102,
+                  105,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "developer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "project",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  106,
+                  101,
+                  99,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project.company",
+                "account": "Project"
+              }
+            ]
+          }
+        },
+        {
+          "name": "application",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  112,
+                  112,
+                  108,
+                  105,
+                  99,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              },
+              {
+                "kind": "account",
+                "path": "developer"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "approve_delivery",
+      "docs": [
+        "Releases the escrow: developer gets the budget, treasury the 5% fee."
+      ],
+      "discriminator": [
+        28,
+        233,
+        51,
+        115,
+        33,
+        220,
+        41,
+        28
+      ],
+      "accounts": [
+        {
+          "name": "company",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "contract"
+          ]
+        },
+        {
+          "name": "contract",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  97,
+                  99,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "contract.project",
+                "account": "Contract"
+              }
+            ]
+          }
+        },
+        {
+          "name": "developer",
+          "writable": true
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "Escrow vault; drained to its final distribution: developer, treasury, company."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "contract"
+              }
+            ]
+          }
+        },
+        {
+          "name": "treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cancel_after_max_rounds",
+      "docs": [
+        "Bounded company refund after MAX_CORRECTION_ROUNDS correction cycles."
+      ],
+      "discriminator": [
+        196,
+        55,
+        177,
+        15,
+        250,
+        192,
+        106,
+        218
+      ],
+      "accounts": [
+        {
+          "name": "company",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "contract"
+          ]
+        },
+        {
+          "name": "contract",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  97,
+                  99,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "contract.project",
+                "account": "Contract"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "Escrow vault; refunded to the company here, drained to zero."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "contract"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "close_contract",
+      "docs": [
+        "Closes a terminal contract account, returning rent to the company."
+      ],
+      "discriminator": [
+        37,
+        244,
+        34,
+        168,
+        92,
+        202,
+        80,
+        106
+      ],
+      "accounts": [
+        {
+          "name": "company",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "contract"
+          ]
+        },
+        {
+          "name": "contract",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  97,
+                  99,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "contract.project",
+                "account": "Contract"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "close_project",
+      "docs": [
+        "Closes an uncontracted project, returning rent to the company."
+      ],
+      "discriminator": [
+        117,
+        209,
+        53,
+        106,
+        93,
+        55,
+        112,
+        49
+      ],
+      "accounts": [
+        {
+          "name": "company",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "project"
+          ]
+        },
+        {
+          "name": "project",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  106,
+                  101,
+                  99,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "company"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_profile",
+      "docs": [
+        "Creates the caller's permanent profile (Company or Developer role)."
+      ],
+      "discriminator": [
+        225,
+        205,
+        234,
+        143,
+        17,
+        186,
+        50,
+        220
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "profile",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  102,
+                  105,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "role",
+          "type": {
+            "defined": {
+              "name": "ProfileRole"
+            }
+          }
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "email",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "create_project",
+      "discriminator": [
+        148,
+        219,
+        181,
+        42,
+        221,
+        114,
+        145,
+        190
+      ],
+      "accounts": [
+        {
+          "name": "company",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "company_profile",
+          "docs": [
+            "Strict role: only wallets with a Company profile may publish projects."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  102,
+                  105,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "company"
+              }
+            ]
+          }
+        },
+        {
+          "name": "project",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  106,
+                  101,
+                  99,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "company"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "budget_lamports",
+          "type": "u64"
+        },
+        {
+          "name": "deadline_ts",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "deliver",
+      "discriminator": [
+        250,
+        131,
+        222,
+        57,
+        211,
+        229,
+        209,
+        147
+      ],
+      "accounts": [
+        {
+          "name": "developer",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "contract"
+          ]
+        },
+        {
+          "name": "contract",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  97,
+                  99,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "contract.project",
+                "account": "Contract"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "deliverable_uri",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "initialize_treasury",
+      "docs": [
+        "One-time setup: create the platform treasury PDA that receives the 5% fee."
+      ],
+      "discriminator": [
+        124,
+        186,
+        211,
+        195,
+        85,
+        165,
+        129,
+        166
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "reject_application",
+      "discriminator": [
+        85,
+        73,
+        224,
+        47,
+        9,
+        184,
+        39,
+        217
+      ],
+      "accounts": [
+        {
+          "name": "company",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "project"
+          ]
+        },
+        {
+          "name": "project",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  106,
+                  101,
+                  99,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "company"
+              }
+            ]
+          },
+          "relations": [
+            "application"
+          ]
+        },
+        {
+          "name": "application",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  112,
+                  112,
+                  108,
+                  105,
+                  99,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              },
+              {
+                "kind": "account",
+                "path": "application.developer",
+                "account": "Application"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "reject_delivery",
+      "docs": [
+        "Returns the contract to the correction cycle."
+      ],
+      "discriminator": [
+        36,
+        183,
+        50,
+        167,
+        246,
+        186,
+        10,
+        45
+      ],
+      "accounts": [
+        {
+          "name": "company",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "contract"
+          ]
+        },
+        {
+          "name": "contract",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  97,
+                  99,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "contract.project",
+                "account": "Contract"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "update_project",
+      "discriminator": [
+        2,
+        196,
+        131,
+        92,
+        28,
+        139,
+        179,
+        94
+      ],
+      "accounts": [
+        {
+          "name": "company",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "project"
+          ]
+        },
+        {
+          "name": "project",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  106,
+                  101,
+                  99,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "company"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "title",
+          "type": {
+            "option": "string"
+          }
+        },
+        {
+          "name": "description",
+          "type": {
+            "option": "string"
+          }
+        },
+        {
+          "name": "deadline_ts",
+          "type": {
+            "option": "i64"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Application",
+      "discriminator": [
+        219,
+        9,
+        27,
+        113,
+        208,
+        126,
+        203,
+        30
+      ]
+    },
+    {
+      "name": "Contract",
+      "discriminator": [
+        172,
+        138,
+        115,
+        242,
+        121,
+        67,
+        183,
+        26
+      ]
+    },
+    {
+      "name": "Profile",
+      "discriminator": [
+        184,
+        101,
+        165,
+        188,
+        95,
+        63,
+        127,
+        188
+      ]
+    },
+    {
+      "name": "Project",
+      "discriminator": [
+        205,
+        168,
+        189,
+        202,
+        181,
+        247,
+        142,
+        19
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "NotProjectOwner",
+      "msg": "Only the project's company may perform this action"
+    },
+    {
+      "code": 6001,
+      "name": "ProjectNotAcceptable",
+      "msg": "The project is no longer accepting applications (already contracted)"
+    },
+    {
+      "code": 6002,
+      "name": "DeadlinePassed",
+      "msg": "The project's application deadline has passed"
+    },
+    {
+      "code": 6003,
+      "name": "BadBudget",
+      "msg": "Budget must be positive and leave a positive 5% fee (checked arithmetic)"
+    },
+    {
+      "code": 6004,
+      "name": "ApplicationNotSubmitted",
+      "msg": "The application is not in the Submitted state"
+    },
+    {
+      "code": 6005,
+      "name": "DeadlineInvalid",
+      "msg": "The deadline must be in the future"
+    },
+    {
+      "code": 6006,
+      "name": "ContractNotInProgress",
+      "msg": "The contract is not in the InProgress or Corrections state"
+    },
+    {
+      "code": 6007,
+      "name": "ContractNotDelivered",
+      "msg": "The contract is not in the Delivered state"
+    },
+    {
+      "code": 6008,
+      "name": "NotContractDeveloper",
+      "msg": "Only the contract's developer may perform this action"
+    },
+    {
+      "code": 6009,
+      "name": "ContractNotTerminal",
+      "msg": "The contract is not in a terminal state (Released or Cancelled)"
+    },
+    {
+      "code": 6010,
+      "name": "NotEnoughRounds",
+      "msg": "Cancellation is only allowed after MAX_CORRECTION_ROUNDS correction cycles"
+    },
+    {
+      "code": 6011,
+      "name": "TitleTooLong",
+      "msg": "Title exceeds the maximum length"
+    },
+    {
+      "code": 6012,
+      "name": "DescriptionTooLong",
+      "msg": "Description exceeds the maximum length"
+    },
+    {
+      "code": 6013,
+      "name": "MessageTooLong",
+      "msg": "Application message exceeds the maximum length"
+    },
+    {
+      "code": 6014,
+      "name": "DeliverableTooLong",
+      "msg": "Deliverable URI exceeds the maximum length"
+    },
+    {
+      "code": 6015,
+      "name": "TreasuryInitialized",
+      "msg": "The treasury PDA already exists"
+    },
+    {
+      "code": 6016,
+      "name": "VaultDirty",
+      "msg": "The contract vault already contains unexpected funds"
+    },
+    {
+      "code": 6017,
+      "name": "ProfileExists",
+      "msg": "You already have a profile; roles are permanent in this prototype"
+    },
+    {
+      "code": 6018,
+      "name": "ProfileMissing",
+      "msg": "Create your profile first"
+    },
+    {
+      "code": 6019,
+      "name": "NotCompanyProfile",
+      "msg": "Only a Company profile may perform this action"
+    },
+    {
+      "code": 6020,
+      "name": "NotDeveloperProfile",
+      "msg": "Only a Developer profile may perform this action"
+    },
+    {
+      "code": 6021,
+      "name": "ProfileNameTooLong",
+      "msg": "Profile name exceeds the maximum length"
+    }
+  ],
+  "types": [
+    {
+      "name": "Application",
+      "docs": [
+        "A developer's proposal for a project."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "developer",
+            "type": "pubkey"
+          },
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "message",
+            "type": "string"
+          },
+          {
+            "name": "state",
+            "type": {
+              "defined": {
+                "name": "ApplicationState"
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ApplicationState",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Submitted"
+          },
+          {
+            "name": "Rejected"
+          },
+          {
+            "name": "Accepted"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Contract",
+      "docs": [
+        "The escrowed work agreement between a company and one accepted developer."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "company",
+            "type": "pubkey"
+          },
+          {
+            "name": "developer",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount_lamports",
+            "docs": [
+              "What the developer receives on approval (equals Project::budget_lamports)."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "fee_lamports",
+            "docs": [
+              "5% platform fee, released to the treasury on approval."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "correction_rounds",
+            "type": "u32"
+          },
+          {
+            "name": "state",
+            "type": {
+              "defined": {
+                "name": "ContractState"
+              }
+            }
+          },
+          {
+            "name": "deliverable_uri",
+            "type": "string"
+          },
+          {
+            "name": "delivered_at",
+            "type": "i64"
+          },
+          {
+            "name": "vault_bump",
+            "docs": [
+              "Bump of the vault PDA so deposits and payouts can sign from it."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ContractState",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "InProgress"
+          },
+          {
+            "name": "Delivered"
+          },
+          {
+            "name": "Corrections"
+          },
+          {
+            "name": "Released"
+          },
+          {
+            "name": "Cancelled"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Profile",
+      "docs": [
+        "On-chain identity of a user. Strict roles: the role is chosen once at",
+        "creation and cannot change afterwards (enforced by the profile PDA being",
+        "unique per wallet)."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "role",
+            "docs": [
+              "Declared by the wallet itself; stored as sha256(email) for privacy."
+            ],
+            "type": {
+              "defined": {
+                "name": "ProfileRole"
+              }
+            }
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "email_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProfileRole",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Company"
+          },
+          {
+            "name": "Developer"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Project",
+      "docs": [
+        "A job posted by a company. One project per company (PDA over the company key).",
+        "",
+        "While `has_accepted` is false the company may edit or close the project.",
+        "Once a contract exists the project is locked: no edits, no second hiring,",
+        "and the account can only be closed through the contract lifecycle."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "company",
+            "type": "pubkey"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "budget_lamports",
+            "docs": [
+              "Amount the developer receives on approval, in lamports."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "fee_lamports",
+            "docs": [
+              "5% platform fee paid on top of the budget by the company."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "deadline_ts",
+            "docs": [
+              "Unix timestamp after which the company may no longer accept applications."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "has_accepted",
+            "docs": [
+              "True once one application was accepted and a contract funded."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "applications_count",
+            "type": "u32"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "APPLICATION_SEED",
+      "type": "bytes",
+      "value": "[97, 112, 112, 108, 105, 99, 97, 116, 105, 111, 110]"
+    },
+    {
+      "name": "CONTRACT_SEED",
+      "type": "bytes",
+      "value": "[99, 111, 110, 116, 114, 97, 99, 116]"
+    },
+    {
+      "name": "FEE_BPS",
+      "docs": [
+        "The platform fee the paying company covers on top of the budget: 5% (basis points)."
+      ],
+      "type": "u64",
+      "value": "500"
+    },
+    {
+      "name": "MAX_CORRECTION_ROUNDS",
+      "docs": [
+        "After this many correction cycles the company may cancel and recover the escrow."
+      ],
+      "type": "u32",
+      "value": "5"
+    },
+    {
+      "name": "PROFILE_SEED",
+      "type": "bytes",
+      "value": "[112, 114, 111, 102, 105, 108, 101]"
+    },
+    {
+      "name": "PROJECT_SEED",
+      "docs": [
+        "PDA seeds and business constants for the Working escrow program."
+      ],
+      "type": "bytes",
+      "value": "[112, 114, 111, 106, 101, 99, 116]"
+    },
+    {
+      "name": "TREASURY_SEED",
+      "type": "bytes",
+      "value": "[116, 114, 101, 97, 115, 117, 114, 121]"
+    },
+    {
+      "name": "VAULT_SEED",
+      "type": "bytes",
+      "value": "[118, 97, 117, 108, 116]"
+    }
+  ]
+}

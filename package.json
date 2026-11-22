@@ -1,0 +1,11 @@
+{
+  "name": "working",
+  "private": true,
+  "workspaces": [
+    "client",
+    "frontend"
+  ],
+  "dependencies": {
+    "uuid": "^9.0.1"
+  }
+}
